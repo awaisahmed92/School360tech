@@ -18,7 +18,7 @@ class SchoolNavItem {
   final VoidCallback onTap;
 }
 
-/// Shared ink bar + light sidebar used by parent and admin shells.
+/// Shared light bar and sidebar used by parent and admin shells.
 class SchoolChrome extends StatefulWidget {
   const SchoolChrome({
     super.key,
@@ -93,23 +93,27 @@ class _TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
     return Container(
       height: 56,
-      color: const Color(0xFF14181F),
       padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(bottom: BorderSide(color: Color(0xFFE6E8EE))),
+      ),
       child: Row(
         children: [
           if (onMenu != null)
             IconButton(
               tooltip: 'Menu',
               onPressed: onMenu,
-              icon: const Icon(Icons.menu, color: Colors.white),
+              icon: const Icon(Icons.menu, color: Color(0xFF1A1D26)),
             ),
-          const Icon(Icons.school_rounded, color: Colors.white, size: 22),
+          Icon(Icons.school_rounded, color: accent, size: 22),
           const SizedBox(width: 10),
           Text(
             title,
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 16),
+            style: const TextStyle(color: Color(0xFF1A1D26), fontWeight: FontWeight.w800, fontSize: 16),
           ),
           const Spacer(),
           if (trailing != null) trailing!,
@@ -218,7 +222,7 @@ class SchoolAccountMenu extends StatelessWidget {
       children: [
         IconButton(
           onPressed: () {},
-          icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
+          icon: Icon(Icons.notifications_none_rounded, color: Theme.of(context).colorScheme.primary),
         ),
         PopupMenuButton<String>(
           tooltip: 'Account',
@@ -247,13 +251,13 @@ class SchoolAccountMenu extends StatelessWidget {
             children: [
               Text(
                 auth.user?.name ?? 'Parent',
-                style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                style: const TextStyle(color: Color(0xFF1A1D26), fontWeight: FontWeight.w600),
               ),
               const SizedBox(width: 8),
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 14,
-                backgroundColor: Color(0x33FFFFFF),
-                child: Icon(Icons.person, size: 16, color: Colors.white),
+                backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
+                child: Icon(Icons.person, size: 16, color: Theme.of(context).colorScheme.primary),
               ),
             ],
           ),

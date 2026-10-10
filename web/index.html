@@ -31,16 +31,40 @@
 
   <title>school360tech</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    html, body { margin: 0; height: 100%; background: #f3f5ff; font-family: "Segoe UI", sans-serif; }
+    #boot-login { position: fixed; inset: 0; display: flex; background: linear-gradient(135deg, #f3f5ff, #fff); z-index: 1; }
+    #boot-login .pane { flex: 0 0 38%; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    #boot-login .card { width: min(520px, 100%); background: #fff; border-radius: 20px; border: 1px solid #e6e8ee; box-shadow: 0 8px 24px rgba(20,24,31,.08); padding: 28px; }
+    #boot-login .brand { display: flex; align-items: center; gap: 10px; font-size: 32px; font-weight: 700; color: #1f2937; margin-bottom: 26px; }
+    #boot-login h1 { margin: 0; font-size: 30px; }
+    #boot-login .sub { margin: 4px 0 0; color: #6b7280; }
+    #boot-login .hero { flex: 1; background: #fff; display: flex; align-items: center; justify-content: center; text-align: center; padding: 36px; }
+    #boot-login .hero h2 { margin: 0; font-size: 48px; line-height: 1.15; color: #1f2937; }
+    @media (max-width: 979px) { #boot-login .hero { display: none; } #boot-login .pane { flex: 1; } }
+  </style>
 </head>
 <body>
-  <!--
-    You can customize the "flutter_bootstrap.js" script.
-    This is useful to provide a custom configuration to the Flutter loader
-    or to give the user feedback during the initialization process.
-
-    For more details:
-    * https://docs.flutter.dev/platform-integration/web/initialization
-  -->
+  <div id="boot-login">
+    <div class="pane">
+      <div class="card">
+        <div class="brand">School360tech</div>
+        <h1>Welcome Back</h1>
+        <p class="sub">Sign in to continue</p>
+      </div>
+    </div>
+    <aside class="hero"><h2>Student Management<br>and Learning<br>Made Simple</h2></aside>
+  </div>
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    var observer = new MutationObserver(function () {
+      if (document.querySelector('flt-glass-pane, flutter-view, flt-scene-host')) {
+        var el = document.getElementById('boot-login');
+        if (el) el.remove();
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
 </body>
 </html>

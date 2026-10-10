@@ -46,6 +46,23 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  InputDecoration _field(String hint, {Widget? suffix}) {
+    const radius = BorderRadius.all(Radius.circular(12));
+    return InputDecoration(
+      hintText: hint,
+      filled: true,
+      fillColor: const Color(0xFFF9FAFB),
+      suffixIcon: suffix,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      border: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
+      enabledBorder: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
+      focusedBorder: const OutlineInputBorder(
+        borderRadius: radius,
+        borderSide: BorderSide(color: Color(0xFF4F46E5), width: 1.4),
+      ),
+    );
+  }
+
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final ok = await context.read<AuthState>().login(
@@ -88,11 +105,10 @@ class _LoginViewState extends State<LoginView> {
           ),
         ),
         child: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                flex: 38,
-                child: Center(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final wide = constraints.maxWidth >= 980;
+              final form = Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 520),
                     child: Card(
@@ -103,6 +119,7 @@ class _LoginViewState extends State<LoginView> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(28, 28, 28, 20),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const Row(
@@ -142,15 +159,7 @@ class _LoginViewState extends State<LoginView> {
                                         (value == null || value.trim().isEmpty)
                                             ? 'Company code is required'
                                             : null,
-                                    decoration: InputDecoration(
-                                      hintText: 'Same code as HR, Accounts, or POS',
-                                      filled: true,
-                                      fillColor: const Color(0xFFF9FAFB),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                    ),
+                                    decoration: _field('Same code as HR, Accounts, or POS'),
                                   ),
                                   const SizedBox(height: 14),
                                   const Text('Email'),
@@ -162,15 +171,7 @@ class _LoginViewState extends State<LoginView> {
                                         (value == null || value.trim().isEmpty)
                                             ? 'Email is required'
                                             : null,
-                                    decoration: InputDecoration(
-                                      hintText: 'you@example.com',
-                                      filled: true,
-                                      fillColor: const Color(0xFFF9FAFB),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                    ),
+                                    decoration: _field('you@example.com'),
                                   ),
                                   const SizedBox(height: 14),
                                   const Text('Password'),
@@ -183,15 +184,9 @@ class _LoginViewState extends State<LoginView> {
                                         (value == null || value.isEmpty)
                                             ? 'Password is required'
                                             : null,
-                                    decoration: InputDecoration(
-                                      hintText: 'Enter your password',
-                                      filled: true,
-                                      fillColor: const Color(0xFFF9FAFB),
-                                      border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide.none,
-                                      ),
-                                      suffixIcon: IconButton(
+                                    decoration: _field(
+                                      'Enter your password',
+                                      suffix: IconButton(
                                         onPressed: () => setState(
                                             () => _obscure = !_obscure),
                                         icon: Icon(
@@ -203,14 +198,16 @@ class _LoginViewState extends State<LoginView> {
                                     ),
                                   ),
                                   const SizedBox(height: 8),
-                                  CheckboxListTile(
-                                    contentPadding: EdgeInsets.zero,
-                                    value: _remember,
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    title: const Text('Remember me for 30 days'),
-                                    onChanged: (value) => setState(
-                                        () => _remember = value ?? false),
+                                  Row(
+                                    children: [
+                                      Checkbox(
+                                        value: _remember,
+                                        activeColor: const Color(0xFF4F46E5),
+                                        onChanged: (value) => setState(
+                                            () => _remember = value ?? false),
+                                      ),
+                                      const Text('Remember me for 30 days'),
+                                    ],
                                   ),
                                   const SizedBox(height: 8),
                                   SizedBox(
@@ -246,7 +243,7 @@ class _LoginViewState extends State<LoginView> {
                                 ],
                               ),
                             ),
-                            const Spacer(),
+                            const SizedBox(height: 24),
                             const Divider(),
                             const Text(
                               '© 2026 School360tech. All Rights Reserved.',
@@ -258,11 +255,8 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ),
                   ),
-                ),
-              ),
-              Expanded(
-                flex: 62,
-                child: Container(
+                );
+              final hero = Container(
                   color: Colors.white,
                   padding: const EdgeInsets.fromLTRB(36, 30, 36, 30),
                   child: Column(
@@ -307,9 +301,16 @@ class _LoginViewState extends State<LoginView> {
                       ),
                     ],
                   ),
-                ),
-              ),
-            ],
+                );
+              return wide
+                  ? Row(
+                      children: [
+                        Expanded(flex: 38, child: form),
+                        Expanded(flex: 62, child: hero),
+                      ],
+                    )
+                  : SingleChildScrollView(child: form);
+            },
           ),
         ),
       ),
