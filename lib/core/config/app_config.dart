@@ -6,7 +6,7 @@ class AppConfig {
   static const _defineApi = String.fromEnvironment('API_BASE_URL');
   static const _prodDefaultApi = String.fromEnvironment(
     'PROD_API_BASE_URL',
-    defaultValue: 'https://school360tech.com/api',
+    defaultValue: 'https://school360techx.com/api',
   );
   static const _localApi = 'http://localhost/360tech/School360tech/backend/api';
 

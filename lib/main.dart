@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_plugins/url_strategy.dart';
 import 'package:provider/provider.dart';
+import 'core/config/url_strategy_stub.dart'
+    if (dart.library.html) 'core/config/url_strategy_web.dart';
 
 import 'controllers/app_state.dart';
 import 'controllers/admin_state.dart';
@@ -29,7 +30,7 @@ import 'widgets/school_nav.dart';
 import 'widgets/support_chat_widget.dart';
 
 void main() {
-  usePathUrlStrategy();
+  configureUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiProvider(
