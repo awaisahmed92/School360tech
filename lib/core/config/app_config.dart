@@ -34,4 +34,5 @@ class AppConfig {
   static const prefsTokenKey = 'school360_token';
   static const prefsSessionKey = 'school360_session_json';
   static const prefsRememberEmailKey = 'school360_login_email';
+  static const prefsRememberCompanyKey = 'school360_login_company';
 }

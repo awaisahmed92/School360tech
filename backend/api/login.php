@@ -8,16 +8,17 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $payload = json_input();
-$subdomain = trim((string)($payload['subdomain'] ?? ''));
+$companyCode = trim((string)($payload['company_code'] ?? $payload['subdomain'] ?? ''));
 $email = trim((string)($payload['email'] ?? ''));
 $password = (string)($payload['password'] ?? '');
 
-if ($subdomain === '' || $email === '' || $password === '') {
-    respond(['success' => false, 'message' => 'subdomain, email and password are required'], 422);
+if ($companyCode === '' || $email === '' || $password === '') {
+    respond(['success' => false, 'message' => 'company code, email and password are required'], 422);
 }
 
 try {
-    $pdo = db_connection($subdomain);
+    $tenant = resolve_school_tenant($companyCode);
+    $pdo = db_connection($companyCode);
     $stmt = $pdo->prepare(
         "SELECT id, name, email, role, password_hash, is_active
          FROM users
@@ -52,13 +53,19 @@ try {
                 'avatar_path' => null,
             ],
             'company' => [
-                'subdomain' => $subdomain,
-                'name' => strtoupper($subdomain) . ' School',
+                'subdomain' => $tenant['subdomain'],
+                'name' => $tenant['name'],
                 'logo_path' => null,
                 'currency' => 'PKR',
             ],
         ],
     ]);
+} catch (InvalidArgumentException $e) {
+    respond(['success' => false, 'message' => $e->getMessage()], 422);
+} catch (RuntimeException $e) {
+    respond(['success' => false, 'message' => $e->getMessage()], 404);
+} catch (PDOException $e) {
+    respond(['success' => false, 'message' => 'The school database for this company is not available.'], 503);
 } catch (Throwable $e) {
     respond([
         'success' => false,

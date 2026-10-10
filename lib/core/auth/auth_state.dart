@@ -31,7 +31,7 @@ class AuthState extends ChangeNotifier {
   }
 
   Future<bool> login({
-    required String subdomain,
+    required String companyCode,
     required String email,
     required String password,
   }) async {
@@ -40,7 +40,7 @@ class AuthState extends ChangeNotifier {
     notifyListeners();
     try {
       _session = await _service.login(
-        subdomain: subdomain,
+        companyCode: companyCode,
         email: email,
         password: password,
       );

@@ -27,12 +27,11 @@ class CalendarWidget extends StatelessWidget {
               itemBuilder: (_, i) {
                 final day = i - 2;
                 final active = day > 0 && day <= 31;
+                final accent = Theme.of(context).colorScheme.primary;
                 return Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6),
-                    color: day == 12
-                        ? const Color(0xFF4F46E5)
-                        : const Color(0xFFF6F7FD),
+                    color: day == 12 ? accent : const Color(0xFFF3F5F8),
                   ),
                   child: Center(
                     child: Text(

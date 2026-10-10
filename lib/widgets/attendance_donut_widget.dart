@@ -5,15 +5,16 @@ class AttendanceDonutWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Card(
+    final accent = Theme.of(context).colorScheme.primary;
+    return Card(
       child: Padding(
-        padding: EdgeInsets.all(14),
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Attendance',
+            const Text('Attendance',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
-            SizedBox(height: 14),
+            const SizedBox(height: 14),
             Center(
               child: SizedBox(
                 width: 120,
@@ -24,18 +25,18 @@ class AttendanceDonutWidget extends StatelessWidget {
                     CircularProgressIndicator(
                       value: 0.92,
                       strokeWidth: 10,
-                      color: Color(0xFF4F46E5),
-                      backgroundColor: Color(0xFFE8EAF9),
+                      color: accent,
+                      backgroundColor: accent.withValues(alpha: 0.12),
                     ),
-                    Text('92%',
+                    const Text('92%',
                         style: TextStyle(
                             fontWeight: FontWeight.w700, fontSize: 20)),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 10),
-            Row(
+            const SizedBox(height: 10),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 _Stat(label: 'Present', value: '23'),

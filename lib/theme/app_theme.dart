@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  static const Color brand = Color(0xFF4F46E5);
+  static const Color brand = Color(0xFF3D4DB7);
   static const Color success = Color(0xFF10B981);
   static const Color warning = Color(0xFFF59E0B);
   static const Color danger = Color(0xFFEF4444);
 
-  static const Color lightBg = Color(0xFFF5F6FB);
+  static const Color lightBg = Color(0xFFF3F5F8);
   static const Color lightSurface = Color(0xFFFFFFFF);
-  static const Color lightBorder = Color(0xFFE7E9F2);
-  static const Color lightText = Color(0xFF1F2937);
+  static const Color lightBorder = Color(0xFFE6E8EE);
+  static const Color lightText = Color(0xFF1A1D26);
 
   static const Color darkBg = Color(0xFF0F1220);
   static const Color darkSurface = Color(0xFF1A1F34);

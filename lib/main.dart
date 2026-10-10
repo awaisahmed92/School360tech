@@ -89,53 +89,28 @@ class _Root extends StatelessWidget {
   }
 }
 
-class _ParentShell extends StatefulWidget {
+class _ParentShell extends StatelessWidget {
   const _ParentShell();
-
-  @override
-  State<_ParentShell> createState() => _ParentShellState();
-}
-
-class _ParentShellState extends State<_ParentShell> {
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
-    final isCompact = MediaQuery.sizeOf(context).width < 1100;
 
-    return Scaffold(
-      key: _scaffoldKey,
-      drawer: isCompact
-          ? Drawer(
-              child: SafeArea(
-                child: ListView(
-                  children: [
-                    for (final item in ParentTab.values)
-                      ListTile(
-                        leading: Icon(item.icon),
-                        title: Text(item.label),
-                        onTap: () {
-                          context.read<AppState>().selectTab(item);
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                  ],
-                ),
-              ),
-            )
-          : null,
+    return SchoolChrome(
+      title: 'School360',
+      trailing: const SchoolAccountMenu(),
+      items: [
+        for (final item in ParentTab.values)
+          SchoolNavItem(
+            label: item.label,
+            icon: item.icon,
+            selected: app.tab == item,
+            onTap: () => context.read<AppState>().selectTab(item),
+          ),
+      ],
       body: Stack(
         children: [
-          Column(
-            children: [
-              SchoolNav(
-                  onMenu: isCompact
-                      ? () => _scaffoldKey.currentState?.openDrawer()
-                      : null),
-              Expanded(child: _parentBody(app.parentPage)),
-            ],
-          ),
+          _parentBody(app.parentPage),
           const Positioned(right: 20, bottom: 20, child: SupportChatButton()),
         ],
       ),
@@ -181,145 +156,52 @@ class _ParentShellState extends State<_ParentShell> {
 class _AdminShell extends StatelessWidget {
   const _AdminShell();
 
+  SchoolNavItem _item(BuildContext context, String label, IconData icon, AdminPage page, AdminPage current) {
+    return SchoolNavItem(
+      label: label,
+      icon: icon,
+      selected: current == page,
+      onTap: () => context.read<AppState>().openAdminPage(page),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
-    return Scaffold(
-      body: Row(
+    final page = app.adminPage;
+    return SchoolChrome(
+      title: 'School360',
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 260,
-            color: const Color(0xFF191D33),
-            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Admin Panel',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700),
-                ),
-                const SizedBox(height: 18),
-                _AdminNavItem(
-                    label: 'Dashboard',
-                    selected: app.adminPage == AdminPage.dashboard,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.dashboard)),
-                _AdminNavItem(
-                    label: 'Students',
-                    selected: app.adminPage == AdminPage.students,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.students)),
-                _AdminNavItem(
-                    label: 'Parents',
-                    selected: app.adminPage == AdminPage.parents,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.parents)),
-                _AdminNavItem(
-                    label: 'Teachers',
-                    selected: app.adminPage == AdminPage.teachers,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.teachers)),
-                _AdminNavItem(
-                    label: 'Classes',
-                    selected: app.adminPage == AdminPage.classes,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.classes)),
-                _AdminNavItem(
-                    label: 'Timetable',
-                    selected: app.adminPage == AdminPage.timetable,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.timetable)),
-                _AdminNavItem(
-                    label: 'Attendance',
-                    selected: app.adminPage == AdminPage.attendance,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.attendance)),
-                _AdminNavItem(
-                    label: 'LMS',
-                    selected: app.adminPage == AdminPage.lms,
-                    onTap: () =>
-                        context.read<AppState>().openAdminPage(AdminPage.lms)),
-                _AdminNavItem(
-                    label: 'Billing',
-                    selected: app.adminPage == AdminPage.billing,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.billing)),
-                _AdminNavItem(
-                    label: 'Extracurricular',
-                    selected: app.adminPage == AdminPage.extracurricular,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.extracurricular)),
-                _AdminNavItem(
-                    label: 'Announcements',
-                    selected: app.adminPage == AdminPage.announcements,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.announcements)),
-                _AdminNavItem(
-                    label: 'Events',
-                    selected: app.adminPage == AdminPage.events,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.events)),
-                _AdminNavItem(
-                    label: 'Policies',
-                    selected: app.adminPage == AdminPage.policies,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.policies)),
-                _AdminNavItem(
-                    label: 'Settings',
-                    selected: app.adminPage == AdminPage.settings,
-                    onTap: () => context
-                        .read<AppState>()
-                        .openAdminPage(AdminPage.settings)),
-              ],
-            ),
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications_none_rounded, color: Colors.white),
           ),
-          Expanded(
-            child: Column(
-              children: [
-                Container(
-                  height: 62,
-                  color: const Color(0xFF3F33D0),
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      const Text('School360tech Admin',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700)),
-                      const Spacer(),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.notifications_none_rounded,
-                              color: Colors.white)),
-                      TextButton(
-                        onPressed: () => context.read<AuthState>().logout(),
-                        child: const Text('Logout',
-                            style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(child: _adminBody(app.adminPage)),
-              ],
-            ),
+          IconButton(
+            tooltip: 'Logout',
+            onPressed: () => context.read<AuthState>().logout(),
+            icon: const Icon(Icons.logout, color: Colors.white),
           ),
         ],
       ),
+      items: [
+        _item(context, 'Dashboard', Icons.dashboard_outlined, AdminPage.dashboard, page),
+        _item(context, 'Students', Icons.school_outlined, AdminPage.students, page),
+        _item(context, 'Parents', Icons.family_restroom_outlined, AdminPage.parents, page),
+        _item(context, 'Teachers', Icons.person_outline, AdminPage.teachers, page),
+        _item(context, 'Classes', Icons.class_outlined, AdminPage.classes, page),
+        _item(context, 'Timetable', Icons.calendar_view_week_outlined, AdminPage.timetable, page),
+        _item(context, 'Attendance', Icons.fact_check_outlined, AdminPage.attendance, page),
+        _item(context, 'LMS', Icons.menu_book_outlined, AdminPage.lms, page),
+        _item(context, 'Billing', Icons.account_balance_wallet_outlined, AdminPage.billing, page),
+        _item(context, 'Extracurricular', Icons.extension_outlined, AdminPage.extracurricular, page),
+        _item(context, 'Announcements', Icons.campaign_outlined, AdminPage.announcements, page),
+        _item(context, 'Events', Icons.event_outlined, AdminPage.events, page),
+        _item(context, 'Policies', Icons.policy_outlined, AdminPage.policies, page),
+        _item(context, 'Settings', Icons.settings_outlined, AdminPage.settings, page),
+      ],
+      body: _adminBody(page),
     );
   }
 
@@ -357,32 +239,3 @@ class _AdminShell extends StatelessWidget {
   }
 }
 
-class _AdminNavItem extends StatelessWidget {
-  const _AdminNavItem({
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
-      child: ListTile(
-        dense: true,
-        visualDensity: VisualDensity.compact,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        tileColor: selected
-            ? Colors.white.withValues(alpha: 0.14)
-            : Colors.transparent,
-        leading: const Icon(Icons.chevron_right_rounded, color: Colors.white70),
-        title: Text(label, style: const TextStyle(color: Colors.white)),
-        onTap: onTap,
-      ),
-    );
-  }
-}

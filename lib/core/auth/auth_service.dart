@@ -30,18 +30,20 @@ class AuthService {
   }
 
   Future<AuthSession> login({
-    required String subdomain,
+    required String companyCode,
     required String email,
     required String password,
   }) async {
-    if (email.trim().isEmpty || password.isEmpty) {
-      throw AuthException('Email and password are required.');
+    if (companyCode.trim().isEmpty || email.trim().isEmpty || password.isEmpty) {
+      throw AuthException('Company code, email and password are required.');
     }
     try {
+      final code = companyCode.trim().toLowerCase();
       final response = await _client.dio.post(
         '/login.php',
         data: {
-          'subdomain': subdomain.trim().toLowerCase(),
+          'company_code': code,
+          'subdomain': code,
           'email': email.trim(),
           'password': password,
         },

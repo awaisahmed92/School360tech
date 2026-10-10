@@ -24,7 +24,7 @@ class AppState extends ChangeNotifier {
   ParentTab get tab => _tab;
   ParentPage get parentPage => _parentPage;
   AdminPage get adminPage => _adminPage;
-  Color get brandColor => const Color(0xFF4F46E5);
+  Color get brandColor => const Color(0xFF3D4DB7);
 
   void toggleTheme() {
     _darkMode = !_darkMode;

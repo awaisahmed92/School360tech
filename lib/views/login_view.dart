@@ -14,6 +14,7 @@ class LoginView extends StatefulWidget {
 
 class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
+  final _companyCtrl = TextEditingController();
   final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   bool _obscure = true;
@@ -28,15 +29,18 @@ class _LoginViewState extends State<LoginView> {
   Future<void> _restoreRemembered() async {
     final prefs = await SharedPreferences.getInstance();
     final remembered = prefs.getString(AppConfig.prefsRememberEmailKey);
+    final company = prefs.getString(AppConfig.prefsRememberCompanyKey);
     if (!mounted || remembered == null) return;
     setState(() {
       _remember = true;
       _emailCtrl.text = remembered;
+      if (company != null) _companyCtrl.text = company;
     });
   }
 
   @override
   void dispose() {
+    _companyCtrl.dispose();
     _emailCtrl.dispose();
     _passwordCtrl.dispose();
     super.dispose();
@@ -45,7 +49,7 @@ class _LoginViewState extends State<LoginView> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final ok = await context.read<AuthState>().login(
-          subdomain: Uri.base.host.split('.').first,
+          companyCode: _companyCtrl.text.trim(),
           email: _emailCtrl.text.trim(),
           password: _passwordCtrl.text,
         );
@@ -63,8 +67,11 @@ class _LoginViewState extends State<LoginView> {
     if (_remember) {
       await prefs.setString(
           AppConfig.prefsRememberEmailKey, _emailCtrl.text.trim());
+      await prefs.setString(
+          AppConfig.prefsRememberCompanyKey, _companyCtrl.text.trim());
     } else {
       await prefs.remove(AppConfig.prefsRememberEmailKey);
+      await prefs.remove(AppConfig.prefsRememberCompanyKey);
     }
   }
 
@@ -126,6 +133,26 @@ class _LoginViewState extends State<LoginView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  const Text('Company code'),
+                                  const SizedBox(height: 6),
+                                  TextFormField(
+                                    controller: _companyCtrl,
+                                    textInputAction: TextInputAction.next,
+                                    validator: (value) =>
+                                        (value == null || value.trim().isEmpty)
+                                            ? 'Company code is required'
+                                            : null,
+                                    decoration: InputDecoration(
+                                      hintText: 'Same code as HR, Accounts, or POS',
+                                      filled: true,
+                                      fillColor: const Color(0xFFF9FAFB),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(12),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 14),
                                   const Text('Email'),
                                   const SizedBox(height: 6),
                                   TextFormField(

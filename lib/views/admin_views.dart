@@ -18,10 +18,10 @@ class AdminDashboardView extends StatelessWidget {
           spacing: 10,
           runSpacing: 10,
           children: [
-            _KpiCard(label: 'Total Students', value: '1,248'),
-            _KpiCard(label: 'Total Teachers', value: '87'),
-            _KpiCard(label: 'Total Parents', value: '2,020'),
-            _KpiCard(label: 'Fee Collected', value: 'PKR 4.2M'),
+            _KpiCard(label: 'Total Students', value: '1,248', icon: Icons.school_outlined),
+            _KpiCard(label: 'Total Teachers', value: '87', icon: Icons.person_outline),
+            _KpiCard(label: 'Total Parents', value: '2,020', icon: Icons.family_restroom_outlined),
+            _KpiCard(label: 'Fee Collected', value: 'PKR 4.2M', icon: Icons.account_balance_wallet_outlined),
           ],
         ),
         SizedBox(height: 12),
@@ -310,28 +310,39 @@ class _Panel extends StatelessWidget {
 }
 
 class _KpiCard extends StatelessWidget {
-  const _KpiCard({required this.label, required this.value});
+  const _KpiCard({required this.label, required this.value, required this.icon});
   final String label;
   final String value;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
+    final accent = Theme.of(context).colorScheme.primary;
     return Container(
-      width: 210,
-      padding: const EdgeInsets.all(12),
+      width: 220,
+      padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE6E8F2)),
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: const Color(0xFFE6E8EE)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: const TextStyle(color: Color(0xFF6B7280))),
-          const SizedBox(height: 8),
-          Text(value,
-              style:
-                  const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
+          Container(
+            width: 36,
+            height: 36,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: accent.withValues(alpha: 0.10),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(icon, size: 18, color: accent),
+          ),
+          const SizedBox(height: 12),
+          Text(label, style: const TextStyle(color: Color(0xFF6B7280), fontSize: 13, fontWeight: FontWeight.w600)),
+          const SizedBox(height: 4),
+          Text(value, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: Color(0xFF1A1D26))),
         ],
       ),
     );
