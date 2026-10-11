@@ -46,19 +46,21 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
-  InputDecoration _field(String hint, {Widget? suffix}) {
-    const radius = BorderRadius.all(Radius.circular(12));
+  InputDecoration _field(String hint, {Widget? suffix, IconData? icon}) {
+    const radius = BorderRadius.all(Radius.circular(10));
+    const side = BorderSide(color: Color(0xFFD9D6F5));
     return InputDecoration(
       hintText: hint,
       filled: true,
-      fillColor: const Color(0xFFF9FAFB),
+      fillColor: Colors.white,
+      prefixIcon: icon == null ? null : Icon(icon, size: 18, color: Color(0xFF64748B)),
       suffixIcon: suffix,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      border: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
-      enabledBorder: const OutlineInputBorder(borderRadius: radius, borderSide: BorderSide.none),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
+      border: const OutlineInputBorder(borderRadius: radius, borderSide: side),
+      enabledBorder: const OutlineInputBorder(borderRadius: radius, borderSide: side),
       focusedBorder: const OutlineInputBorder(
         borderRadius: radius,
-        borderSide: BorderSide(color: Color(0xFF4F46E5), width: 1.4),
+        borderSide: BorderSide(color: Color(0xFF4338CA), width: 1.6),
       ),
     );
   }
@@ -95,19 +97,30 @@ class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     final busy = context.watch<AuthState>().busy;
+    final wide = MediaQuery.sizeOf(context).width >= 980;
+    final form = _form(busy);
     return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFF3F5FF), Colors.white],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      backgroundColor: const Color(0xFFE8E7F4),
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.all(wide ? 18 : 0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(wide ? 28 : 0),
+            child: ColoredBox(
+              color: Colors.white,
+              child: wide
+                  ? Row(children: [Expanded(flex: 5, child: form), const Expanded(flex: 6, child: _SchoolStory())])
+                  : form,
+            ),
           ),
         ),
-        child: SafeArea(
-          child: LayoutBuilder(
+      ),
+    );
+  }
+
+  Widget _form(bool busy) {
+    return LayoutBuilder(
             builder: (context, constraints) {
-              final wide = constraints.maxWidth >= 980;
               final form = Center(
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 520),
@@ -159,7 +172,7 @@ class _LoginViewState extends State<LoginView> {
                                         (value == null || value.trim().isEmpty)
                                             ? 'Company code is required'
                                             : null,
-                                    decoration: _field('Same code as HR, Accounts, or POS'),
+                                    decoration: _field('Same code as HR, Accounts, or POS', icon: Icons.apartment_outlined),
                                   ),
                                   const SizedBox(height: 14),
                                   const Text('Email'),
@@ -171,7 +184,7 @@ class _LoginViewState extends State<LoginView> {
                                         (value == null || value.trim().isEmpty)
                                             ? 'Email is required'
                                             : null,
-                                    decoration: _field('you@example.com'),
+                                    decoration: _field('you@example.com', icon: Icons.mail_outline),
                                   ),
                                   const SizedBox(height: 14),
                                   const Text('Password'),
@@ -186,6 +199,7 @@ class _LoginViewState extends State<LoginView> {
                                             : null,
                                     decoration: _field(
                                       'Enter your password',
+                                      icon: Icons.lock_outline,
                                       suffix: IconButton(
                                         onPressed: () => setState(
                                             () => _obscure = !_obscure),
@@ -214,6 +228,7 @@ class _LoginViewState extends State<LoginView> {
                                     width: double.infinity,
                                     child: FilledButton(
                                       style: FilledButton.styleFrom(
+                                        backgroundColor: const Color(0xFF312E81),
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 14),
                                         shape: RoundedRectangleBorder(
@@ -256,63 +271,96 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 );
-              final hero = Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.fromLTRB(36, 30, 36, 30),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'Student Management\nand Learning\nMade Simple',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 50,
-                            height: 1.15,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF1F2937)),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'The School360tech suite helps schools manage students,\nacademics, attendance, billing, and communication in one place.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(color: Color(0xFF6B7280), fontSize: 20),
-                      ),
-                      const SizedBox(height: 34),
-                      Container(
-                        constraints:
-                            const BoxConstraints(maxWidth: 520, maxHeight: 290),
-                        padding: const EdgeInsets.all(28),
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFFF5F7FF), Color(0xFFECEFff)],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                              color: const Color(0xFF4F46E5).withValues(
-                                alpha: 0.15,
-                              )),
-                        ),
-                        child: const Center(
-                          child: Icon(Icons.desktop_windows_outlined,
-                              size: 180, color: Color(0xFF4F46E5)),
-                        ),
-                      ),
-                    ],
-                  ),
-                );
-              return wide
-                  ? Row(
-                      children: [
-                        Expanded(flex: 38, child: form),
-                        Expanded(flex: 62, child: hero),
-                      ],
-                    )
-                  : SingleChildScrollView(child: form);
+              return SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                  child: form,
+                ),
+              );
             },
-          ),
-        ),
+    );
+  }
+}
+
+class _SchoolStory extends StatefulWidget {
+  const _SchoolStory();
+
+  @override
+  State<_SchoolStory> createState() => _SchoolStoryState();
+}
+
+class _SchoolStoryState extends State<_SchoolStory> with SingleTickerProviderStateMixin {
+  late final AnimationController _float = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _float.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(colors: [Color(0xFF1E1B4B), Color(0xFF4338CA)], begin: Alignment.topLeft, end: Alignment.bottomRight),
+      ),
+      child: AnimatedBuilder(
+        animation: _float,
+        builder: (context, _) {
+          final dy = (_float.value - 0.5) * 16;
+          return Stack(
+            children: [
+              const Padding(
+                padding: EdgeInsets.fromLTRB(48, 56, 48, 40),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('SCHOOL360TECH', style: TextStyle(color: Color(0xFFC7D2FE), fontWeight: FontWeight.w700, letterSpacing: 1.2)),
+                    SizedBox(height: 18),
+                    Text('A calmer desk\nfor the whole school', style: TextStyle(color: Colors.white, fontSize: 40, height: 1.12, fontWeight: FontWeight.w700)),
+                    SizedBox(height: 22),
+                    Text('“Admissions, attendance, and fees stopped living in five different books.”', style: TextStyle(color: Color(0xFFE0E7FF), fontSize: 18, height: 1.45)),
+                    SizedBox(height: 18),
+                    Text('Sara Qureshi', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+                    Text('Registrar, city campus', style: TextStyle(color: Color(0xFFC7D2FE))),
+                  ],
+                ),
+              ),
+              Positioned(top: 40 + dy, right: 28, child: const _FloatNote(icon: Icons.school_outlined, title: 'Today', subtitle: '96% attendance')),
+              Positioned(bottom: 40 - dy, right: 46, child: const _FloatNote(icon: Icons.menu_book_outlined, title: 'Term', subtitle: 'Fees posted')),
+            ],
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _FloatNote extends StatelessWidget {
+  const _FloatNote({required this.icon, required this.title, required this.subtitle});
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.95),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [BoxShadow(color: Color(0x33000000), blurRadius: 18, offset: Offset(0, 8))],
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: const Color(0xFF312E81)),
+          const SizedBox(width: 10),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(title, style: const TextStyle(fontWeight: FontWeight.w700)),
+            Text(subtitle, style: const TextStyle(fontSize: 12, color: Color(0xFF64748B))),
+          ])),
+        ],
       ),
     );
   }
