@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'core/config/url_strategy_stub.dart'
@@ -25,6 +26,7 @@ import 'views/login_view.dart';
 import 'views/my_children_view.dart';
 import 'views/parent_profile_view.dart';
 import 'views/policies_view.dart';
+import 'views/product_intro_view.dart';
 import 'views/timetable_view.dart';
 import 'widgets/school_nav.dart';
 import 'widgets/support_chat_widget.dart';
@@ -62,16 +64,51 @@ class School360App extends StatelessWidget {
   }
 }
 
-class _Root extends StatelessWidget {
+/// The public website stays on the apex. A company address opens the app.
+bool _companySite() {
+  if (!kIsWeb) return true;
+  final host = Uri.base.host.toLowerCase().split(':').first;
+  const base = 'school360techx.com';
+  if (host == 'localhost' || host == '127.0.0.1' || host == base || host == 'www.$base') {
+    return false;
+  }
+  if (!host.endsWith('.$base')) return false;
+  final label = host.substring(0, host.length - base.length - 1);
+  if (label.isEmpty || label.contains('.') || label == 'www' || label == 'api') return false;
+  return RegExp(r'^[a-z0-9]{1,40}$').hasMatch(label);
+}
+
+bool _wantsLogin() {
+  final target = '${Uri.base.path} ${Uri.base.fragment}'.toLowerCase();
+  return target.contains('/login');
+}
+
+class _Root extends StatefulWidget {
   const _Root();
+
+  @override
+  State<_Root> createState() => _RootState();
+}
+
+class _RootState extends State<_Root> {
+  late bool _login = _companySite() || _wantsLogin();
 
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthState>();
     if (auth.status == AuthStatus.unknown) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(
+        backgroundColor: Color(0xFF07111F),
+        body: Center(child: CircularProgressIndicator(color: Color(0xFF93C5FD))),
+      );
     }
     if (auth.status == AuthStatus.unauthenticated) {
+      if (!_login) {
+        return ProductIntroView(
+          onTryNow: () => setState(() => _login = true),
+          onSignIn: () => setState(() => _login = true),
+        );
+      }
       return const Stack(
         children: [
           LoginView(),
